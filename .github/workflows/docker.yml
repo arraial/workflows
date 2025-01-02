@@ -10,22 +10,24 @@ on:
   workflow_call:
     secrets:
       github_token:
-        type: string
         required: true
+        description: TODO
       docker_username:
-        type: string
         required: true
+        description: TODO
       docker_token:
-        type: string
         required: true
+        description: TODO
     inputs:
       image_name:
         type: string
         required: true
+        description: TODO
       ci_image:
         type: string
         required: false
         default: ubuntu-22.04
+        description: TODO
 
 jobs:
   docker:

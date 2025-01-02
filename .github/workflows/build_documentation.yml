@@ -6,16 +6,17 @@ name: build_documentation
 
 on:
   workflow_call:
-    secrets: inherit
     inputs:
       docs_path:
         type: string
         required: false
         default: docs
+        description: TODO
       ci_image:
-          type: string
-          required: false
-          default: ubuntu-22.04
+        type: string
+        required: false
+        default: ubuntu-22.04
+        description: TODO
 
 jobs:
   build:

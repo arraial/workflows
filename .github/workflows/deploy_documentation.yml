@@ -4,13 +4,14 @@ on:
   workflow_call:
     inputs:
       artifact:
-        description: Workflow artifact where HTML documentation is available
         type: string
         required: true
+        description: Workflow artifact where HTML documentation is available
       ci_image:
-          type: string
-          required: false
-          default: ubuntu-22.04
+        type: string
+        required: false
+        default: ubuntu-22.04
+        description: TODO
 
 jobs:
   deploy:

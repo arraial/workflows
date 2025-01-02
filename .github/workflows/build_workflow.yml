@@ -4,9 +4,11 @@
 name: Build Workflow
 
 on:
-  workflow_dispatch:
-  push:
-    branches: [ "**" ]
+  workflow_call:
+    secrets:
+      github_token:
+        required: true
+        description: TODO
 
 jobs:
   build_workflow:
@@ -51,7 +53,7 @@ jobs:
         git push origin $TAG
       env:
         TAG: ${{ steps.prepare.outputs.version }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.github_token }}
 
     - name: Create Release
       if: ${{ env.PUBLISH }}
@@ -61,4 +63,4 @@ jobs:
         makeLatest: true
         generateReleaseNotes: true
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.github_token }}

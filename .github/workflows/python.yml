@@ -12,18 +12,22 @@ on:
       app_name:
         type: string
         required: true
+        description: TODO
       ci_image:
         type: string
         required: false
         default: ubuntu-22.04
+        description: TODO
       python_versions:
         type: string
         required: false
         default: "['3.11','3.12','3.13']"
+        description: TODO
       lint:
         type: boolean
         required: false
         default: true
+        description: TODO
 
 jobs:
   python:

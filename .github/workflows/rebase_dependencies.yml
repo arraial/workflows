@@ -10,14 +10,17 @@ on:
         type: string
         required: false
         default: main
+        description: TODO
       target:
         type: string
         required: false
         default: dependencies
+        description: TODO
       ci_image:
-          type: string
-          required: false
-          default: ubuntu-latest
+        type: string
+        required: false
+        default: ubuntu-latest
+        description: TODO
 
 jobs:
   rebase:
