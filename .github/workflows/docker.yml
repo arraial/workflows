@@ -61,8 +61,8 @@ jobs:
       id: prepare
       shell: bash
       run: |
-        echo image="${IMAGE@L}" >> $GITHUB_OUTPUT
-        echo version="${TAG%%-*}" >> $GITHUB_OUTPUT
+        echo image="${IMAGE@L}" >> "$GITHUB_OUTPUT"
+        echo version="${TAG%%-*}" >> "$GITHUB_OUTPUT"
       env:
         IMAGE: ${{ inputs.image_name }}
         TAG: ${{ steps.version.outputs.version }}
