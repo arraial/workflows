@@ -5,6 +5,8 @@ name: Build Workflow
 
 on:
   workflow_call:
+  push:
+    branches: [ "**" ]
 
 jobs:
   build_workflow:
