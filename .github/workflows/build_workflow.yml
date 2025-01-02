@@ -4,6 +4,7 @@
 name: Build Workflow
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "**" ]
 
@@ -12,7 +13,7 @@ jobs:
     name: Build Workflow
     runs-on: ubuntu-latest
     env:
-      PUBLISH: ${{ github.ref == github.event.repository.default_branch }}
+      PUBLISH: ${{ github.ref_name == github.event.repository.default_branch }}
 
     steps:
     - uses: actions/checkout@v4
