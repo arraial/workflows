@@ -7,9 +7,6 @@ on:
         description: Workflow artifact where HTML documentation is available
         type: string
         required: true
-      page_url:
-        type: string
-        required: true
       ci_image:
           type: string
           required: false
@@ -21,9 +18,6 @@ jobs:
     permissions:
       pages: write      # deploy to Pages
       id-token: write   # verify deployment originates from appropriate source
-    environment:
-      name: github-pages
-      url: ${{ inputs.page_url }} # FIXME previous ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Deploy to GitHub Pages
         id: deployment

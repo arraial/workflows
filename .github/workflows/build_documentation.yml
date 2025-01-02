@@ -1,7 +1,12 @@
+# This workflow will
+# - build documentation artifact;
+# - publish Github Pages.
+
 name: build_documentation
 
 on:
   workflow_call:
+    secrets: inherit
     inputs:
       docs_path:
         type: string

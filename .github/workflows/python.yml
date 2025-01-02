@@ -8,10 +8,6 @@ name: Test Application
 
 on:
   workflow_call:
-    secrets:
-      personal_access_token:
-        type: string
-        required: true
     inputs:
       app_name:
         type: string
