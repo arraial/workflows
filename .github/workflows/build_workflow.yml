@@ -1,7 +1,7 @@
 # This workflow will
 # - lint, tag and release current reusable workflow bundle.
 
-name: Build Workflow
+name: build_workflow
 
 on:
   workflow_dispatch:
@@ -43,7 +43,7 @@ jobs:
         ./actionlint -color
 
     - name: Push Tag
-      if: ${{ env.PUBLISH == true }}
+      if: ${{ env.PUBLISH }}
       run: |
         git config user.name github-actions
         git config user.email github-actions@github.com
@@ -54,7 +54,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.github_token }}
 
     - name: Create Release
-      if: ${{ env.PUBLISH == true }}
+      if: ${{ env.PUBLISH }}
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ steps.prepare.outputs.version }}

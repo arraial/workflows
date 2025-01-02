@@ -1,7 +1,7 @@
 # Workflow will:
 # - ensure branch is up to date in accordance to default branch.
 
-name: Rebase with default branch
+name: rebase_with_default_branch
 
 on:
   workflow_call:

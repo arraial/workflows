@@ -4,7 +4,7 @@
 # - push image to a Docker Hub and repository description;
 # - push image to Github Releases, create Tag and Release.
 
-name: Build & Publish Docker Image
+name: build_publish_image
 
 on:
   workflow_call:
