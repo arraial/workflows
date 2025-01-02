@@ -7,7 +7,7 @@
 name: Build & Publish Docker Image
 
 on:
-  workflow_dispatch:
+  workflow_call:
     secrets:
       github_token:
         type: string
