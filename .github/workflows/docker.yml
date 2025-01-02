@@ -24,7 +24,7 @@ on:
         type: string
         required: false
         default: ubuntu-22.04
-        description: TODO
+        description: Github type of machine to run the workflow on
 
 jobs:
   docker:

@@ -17,17 +17,17 @@ on:
         type: string
         required: false
         default: ubuntu-22.04
-        description: TODO
+        description: Github type of machine to run the workflow on
       python_versions:
         type: string
         required: false
         default: "['3.11','3.12','3.13']"
-        description: TODO
+        description: Python versions to build workflow matrix
       lint:
         type: boolean
         required: false
         default: true
-        description: TODO
+        description: Whether to lint application.
 
 jobs:
   python:
