@@ -11,15 +11,20 @@ on:
     secrets:
       docker_username:
         required: true
-        description: TODO
+        description: Docker Hub username
       docker_token:
         required: true
-        description: TODO
+        description: Docker Hub token
     inputs:
       image_name:
         type: string
         required: true
-        description: TODO
+        description: Name of image to build
+      test_image:
+        type: boolean
+        required: false
+        default: true
+        description: Whether to run image test suite
       ci_image:
         type: string
         required: false
@@ -77,6 +82,18 @@ jobs:
         tags: |
           type=raw,value=latest
           type=raw,value=${{ steps.prepare.outputs.version }}
+
+    - name: Test
+      if: ${{ inputs.test_image }}
+      uses: docker/bake-action@v5
+      with:
+        push: false
+        targets: test
+        files: |
+          ./docker-bake.hcl
+          ${{ steps.meta.outputs.bake-file }}
+      env:
+        TAG: ${{ steps.prepare.outputs.version }}
 
     - name: Login to Docker Hub registry
       uses: docker/login-action@v3

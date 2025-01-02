@@ -27,7 +27,7 @@ on:
         type: boolean
         required: false
         default: true
-        description: Whether to lint application.
+        description: Whether to lint application
 
 jobs:
   python:
