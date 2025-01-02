@@ -5,8 +5,8 @@ name: Rebase with default branch
 
 on:
   workflow_call:
-    branch:
-      target:
+    inputs:
+      branch:
         type: string
         required: false
         default: dependencies
