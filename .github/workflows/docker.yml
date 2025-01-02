@@ -9,9 +9,6 @@ name: Build & Publish Docker Image
 on:
   workflow_call:
     secrets:
-      github_token:
-        required: true
-        description: TODO
       docker_username:
         required: true
         description: TODO
