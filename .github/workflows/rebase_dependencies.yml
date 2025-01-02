@@ -1,0 +1,33 @@
+# Workflow will:
+# - ensure branch is up to date in accordance to default branch.
+
+name: Rebase with default branch
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        type: string
+        required: false
+        default: dependencies
+        description: Branch to rebase default one with
+      ci_image:
+        type: string
+        required: false
+        default: ubuntu-latest
+        description: Github type of machine to run the workflow on
+
+jobs:
+  rebase:
+    name: Rebase current branch with '${{ inputs.branch }}'
+    runs-on: ${{ inputs.ci_image }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # otherwise, one would need to push refs to dest repo
+          ref: ${{ inputs.branch }}
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git rebase -Xours origin/main
+          git push origin dependencies --force

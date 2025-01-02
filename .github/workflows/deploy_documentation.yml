@@ -1,0 +1,27 @@
+name: deploy_documentation
+
+on:
+  workflow_call:
+    inputs:
+      artifact:
+        type: string
+        required: true
+        description: Workflow artifact where HTML documentation is available
+      ci_image:
+        type: string
+        required: false
+        default: ubuntu-22.04
+        description: Github type of machine to run the workflow on
+
+jobs:
+  deploy:
+    runs-on: ${{ inputs.ci_image }}
+    permissions:
+      pages: write      # deploy to Pages
+      id-token: write   # verify deployment originates from appropriate source
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: ${{ inputs.artifact }}

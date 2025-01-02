@@ -1,0 +1,63 @@
+# This workflow will
+# - lint, tag and release current reusable workflow bundle.
+
+name: Build Workflow
+
+on:
+  push:
+    branches: [ "**" ]
+
+jobs:
+  build_workflow:
+    name: Build Workflow
+    runs-on: ubuntu-latest
+    env:
+      PUBLISH: ${{ github.ref == github.event.repository.default_branch }}
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}   # checkout the correct branch name
+        fetch-depth: 0                # fetch the whole repo history
+
+    - name: Git Version
+      id: version
+      uses: codacy/git-version@2.8.0
+      with:
+        release-branch: ${{ github.event.repository.default_branch }}
+
+    - name: Set variables
+      if: success()
+      id: prepare
+      shell: bash
+      run: |
+        echo version="${TAG%%-*}" >> "$GITHUB_OUTPUT"
+      env:
+        TAG: ${{ steps.version.outputs.version }}
+
+    - name: Check workflow files
+      shell: bash
+      run: |
+        bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+        ./actionlint -color
+
+    - name: Push Tag
+      if: ${{ env.PUBLISH == true }}
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git tag "$TAG"
+        git push origin "$TAG"
+      env:
+        TAG: ${{ steps.prepare.outputs.version }}
+        GITHUB_TOKEN: ${{ secrets.github_token }}
+
+    - name: Create Release
+      if: ${{ env.PUBLISH == true }}
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ steps.prepare.outputs.version }}
+        makeLatest: true
+        generateReleaseNotes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.github_token }}
