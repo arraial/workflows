@@ -31,7 +31,7 @@ on:
 
 jobs:
   python:
-    name: Test Application
+    name: Test App
     runs-on: ${{ inputs.ci_image }}
     env:
       APP: ${{ inputs.app_name }}

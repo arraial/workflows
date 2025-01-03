@@ -145,8 +145,6 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ steps.prepare.outputs.version }}
-        token: 
+        token: ${{ secrets.github_token }}
         makeLatest: true
         generateReleaseNotes: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.github_token }}
