@@ -1,6 +1,6 @@
 # Workflow will:
 # - install Python dependencies;
-# - lint and run tests with several Python versions.
+# - lint and run tests with multiple Python versions.
 # For more information see:
 # https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
@@ -12,7 +12,7 @@ on:
       app_name:
         type: string
         required: true
-        description: TODO
+        description: Application and source code folder name
       ci_image:
         type: string
         required: false
@@ -86,25 +86,19 @@ jobs:
       run: |
         make set_version VERSION=${{ steps.prepare.outputs.version }}
 
-    - name: Run ruff
+    - name: Lint
       if: ${{ inputs.lint }}
       run: |
-        make ruff
+        make lint
 
     - name: Format
       if: ${{ inputs.lint }}
       run: |
         make format
 
-    - name: Run vulture
-      if: ${{ inputs.lint }}
-      run: |
-        make vulture
-
     - name: Test
       run: |
-        poetry run dynaconf write yaml -y -p ./tests/ -e test \
-          -s spotify_client=${{ secrets.TEST_SPOTIFY_CLIENT }} \
-          -s spotify_secret=${{ secrets.TEST_SPOTIFY_SECRET }} \
-          -s queue_broker_url=${{ secrets.TEST_RABBITMQ_URL }}; \
-        make test
+        SECRETS_FILE="$(make test_secrets_file)"
+        make test TEST_SECRETS="$SECRETS_FILE"
+      env:
+        SECRETS_JSON: ${{ toJSON(secrets) }}
