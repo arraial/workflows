@@ -28,6 +28,11 @@ on:
         required: false
         default: true
         description: Whether to lint application
+      test:
+        type: boolean
+        required: false
+        default: true
+        description: Whether to test application
 
 jobs:
   python:
@@ -97,8 +102,11 @@ jobs:
         make format
 
     - name: Test
+      if: ${{ inputs.test }}
       run: |
-        SECRETS_FILE="$(make test_secrets_file)"
-        make test TEST_SECRETS="$SECRETS_FILE"
+        python3 -c "import os, json; secrets_dict = json.loads(os.getenv('SECRETS_JSON')); open('.env', 'a').writelines([f'{key}={value}\n' for key, value in secrets_dict.items()])"
+        make test_secrets_file
+        make test
+        rm -f .env
       env:
         SECRETS_JSON: ${{ toJSON(secrets) }}
