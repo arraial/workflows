@@ -89,7 +89,6 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5
       with:
-        context: ${{ inputs.working_dir }}
         images: |
           ${{ steps.prepare.outputs.image }}
           ghcr.io/${{ steps.prepare.outputs.image }}
