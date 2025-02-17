@@ -43,7 +43,7 @@ jobs:
         ./actionlint -color
 
     - name: Push Tag
-      if: ${{ env.PUBLISH }}
+      if: ${{ env.PUBLISH == 'true' }}
       run: |
         git config user.name github-actions
         git config user.email github-actions@github.com
@@ -54,7 +54,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.github_token }}
 
     - name: Create Release
-      if: ${{ env.PUBLISH }}
+      if: ${{ env.PUBLISH == 'true' }}
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ steps.prepare.outputs.version }}

@@ -100,17 +100,17 @@ jobs:
         make set_version VERSION=${{ steps.prepare.outputs.version }}
 
     - name: Lint
-      if: ${{ inputs.lint }}
+      if: ${{ inputs.lint == 'true' }}
       run: |
         make lint
 
     - name: Format
-      if: ${{ inputs.lint }}
+      if: ${{ inputs.lint == 'true' }}
       run: |
         make format
 
     - name: Test
-      if: ${{ inputs.test }}
+      if: ${{ inputs.test == 'true' }}
       run: |
         python3 -c "import os, json; secrets_dict = json.loads(os.getenv('SECRETS_JSON')); open('.env', 'a').writelines([f'{key}={value}\n' for key, value in secrets_dict.items()])"
         make test_secrets_file

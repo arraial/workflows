@@ -98,7 +98,7 @@ jobs:
           type=raw,value=${{ steps.prepare.outputs.version }}
 
     - name: Test
-      if: ${{ inputs.test_image }}
+      if: ${{ inputs.test_image == 'true' }}
       uses: docker/bake-action@v5
       with:
         workdir: ${{ inputs.working_dir }}
@@ -136,7 +136,7 @@ jobs:
         TAG: ${{ steps.prepare.outputs.version }}
 
     - name: Update Docker Hub description
-      if: ${{ env.PUBLISH }}
+      if: ${{ env.PUBLISH == 'true' }}
       uses: peter-evans/dockerhub-description@v4
       with:
         username: ${{ secrets.docker_username }}
@@ -146,7 +146,7 @@ jobs:
         short-description: ${{ github.event.repository.description }}
 
     - name: Push Tag
-      if: ${{ env.PUBLISH }}
+      if: ${{ env.PUBLISH == 'true' }}
       run: |
         git config user.name github-actions
         git config user.email github-actions@github.com
@@ -157,7 +157,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.github_token }}
 
     - name: Create Release
-      if: ${{ env.PUBLISH }}
+      if: ${{ env.PUBLISH == 'true' }}
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ steps.prepare.outputs.version }}
