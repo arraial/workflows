@@ -33,11 +33,19 @@ on:
         required: false
         default: true
         description: Whether to test application
+      working_dir:
+        type: string
+        required: false
+        default: "."
+        description: Defines common working directory for the workflow
 
 jobs:
   python:
     name: Test App
     runs-on: ${{ inputs.ci_image }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_dir }}
     env:
       APP: ${{ inputs.app_name }}
     strategy:
@@ -79,7 +87,7 @@ jobs:
       id: cached-dependencies
       uses: actions/cache@v4
       with:
-        path: .venv
+        path: ${{ inputs.working_dir }}/.venv
         key: ${{ runner.os }}-venv-python${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml') }}
 
     - name: Install dependencies
@@ -92,17 +100,17 @@ jobs:
         make set_version VERSION=${{ steps.prepare.outputs.version }}
 
     - name: Lint
-      if: ${{ inputs.lint }}
+      if: ${{ inputs.lint == 'true' }}
       run: |
         make lint
 
     - name: Format
-      if: ${{ inputs.lint }}
+      if: ${{ inputs.lint == 'true' }}
       run: |
         make format
 
     - name: Test
-      if: ${{ inputs.test }}
+      if: ${{ inputs.test == 'true' }}
       run: |
         python3 -c "import os, json; secrets_dict = json.loads(os.getenv('SECRETS_JSON')); open('.env', 'a').writelines([f'{key}={value}\n' for key, value in secrets_dict.items()])"
         make test_secrets_file
