@@ -1,8 +1,8 @@
 # Workflow will:
-# - install Python dependencies;
-# - lint and run tests with multiple Python versions.
+# - install Golang dependencies;
+# - lint and run tests with multiple Golang versions.
 # For more information see:
-# https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+# https://docs.github.com/en/actions/use-cases-and-examples/building-and-testing/building-and-testing-go
 
 name: test_application
 
@@ -18,11 +18,11 @@ on:
         required: false
         default: ubuntu-22.04
         description: Github type of machine to run the workflow on
-      python_versions:
+      go_versions:
         type: string
         required: false
-        default: "['3.11','3.12','3.13']"
-        description: Python versions to build workflow matrix
+        default: "['stable']"
+        description: Golang versions to build workflow matrix, uses stable by default
       lint:
         type: boolean
         required: false
@@ -40,7 +40,7 @@ on:
         description: Defines common working directory for the workflow
 
 jobs:
-  python:
+  golang:
     name: Test App
     runs-on: ${{ inputs.ci_image }}
     defaults:
@@ -51,7 +51,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ${{ fromJSON(inputs.python_versions) }}
+        go-version: ${{ fromJSON(inputs.go_versions) }}
 
     steps:
     - uses: actions/checkout@v4
@@ -65,39 +65,22 @@ jobs:
       with:
         release-branch: ${{ github.event.repository.default_branch }}
 
-    - name: Set variables
-      if: success()
-      id: prepare
-      shell: bash
-      run: |
-        echo version="${TAG%%-*}" >> "$GITHUB_OUTPUT"
-      env:
-        TAG: ${{ steps.version.outputs.version }}
-
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+    - name: Set up Golang ${{ matrix.go-version }}
+      uses: actions/setup-go@v5
       with:
-        python-version: ${{ matrix.python-version }}
+        go-version: ${{ matrix.go-version }}
 
-    - name: Install Poetry
-      run: |
-        make poetry_setup
-
-    - name: Load cached venv
+    - name: Load cached dependencies
       id: cached-dependencies
       uses: actions/cache@v4
       with:
-        path: ${{ inputs.working_dir }}/.venv
-        key: ${{ runner.os }}-venv-python${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml') }}
+        path: ./go.sum
+        key: ${{ runner.os }}-venv-golang${{ matrix.go-version }}-${{ hashFiles('**/go.sum') }}
 
     - name: Install dependencies
       if: steps.cached-dependencies.outputs.cache-hit != 'true'
       run: |
         make test_setup
-
-    - name: Set project version
-      run: |
-        make set_version VERSION=${{ steps.prepare.outputs.version }}
 
     - name: Lint
       if: ${{ inputs.lint == 'true' }}
@@ -112,9 +95,4 @@ jobs:
     - name: Test
       if: ${{ inputs.test == 'true' }}
       run: |
-        python3 -c "import os, json; secrets_dict = json.loads(os.getenv('SECRETS_JSON')); open('.env', 'a').writelines([f'{key}={value}\n' for key, value in secrets_dict.items()])"
-        make test_secrets_file
         make test
-        rm -f .env
-      env:
-        SECRETS_JSON: ${{ toJSON(secrets) }}
