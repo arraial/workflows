@@ -21,8 +21,8 @@ on:
       go_versions:
         type: string
         required: false
-        default: "['1.21','1.22','1.23']"
-        description: Golang versions to build workflow matrix
+        default: "['stable']"
+        description: Golang versions to build workflow matrix, uses stable by default
       lint:
         type: boolean
         required: false
@@ -33,11 +33,19 @@ on:
         required: false
         default: true
         description: Whether to test application
+      working_dir:
+        type: string
+        required: false
+        default: "."
+        description: Defines common working directory for the workflow
 
 jobs:
   golang:
     name: Test App
     runs-on: ${{ inputs.ci_image }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_dir }}
     env:
       APP: ${{ inputs.app_name }}
     strategy:
@@ -51,7 +59,7 @@ jobs:
         ref: ${{ github.head_ref }}   # checkout the correct branch name
         fetch-depth: 0                # fetch the whole repo history
 
-    - name: Git Version
+    - name: Extract Application Version
       id: version
       uses: codacy/git-version@2.8.0
       with:
@@ -84,16 +92,16 @@ jobs:
         make test_setup
 
     - name: Lint
-      if: ${{ inputs.lint }}
+      if: ${{ inputs.lint == 'true' }}
       run: |
         make lint
 
     - name: Format
-      if: ${{ inputs.lint }}
+      if: ${{ inputs.lint == 'true' }}
       run: |
         make format
 
     - name: Test
-      if: ${{ inputs.test }}
+      if: ${{ inputs.test == 'true' }}
       run: |
         make test

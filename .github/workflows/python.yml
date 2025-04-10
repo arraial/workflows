@@ -59,7 +59,7 @@ jobs:
         ref: ${{ github.head_ref }}   # checkout the correct branch name
         fetch-depth: 0                # fetch the whole repo history
 
-    - name: Git Version
+    - name: Extract Application Version
       id: version
       uses: codacy/git-version@2.8.0
       with:
