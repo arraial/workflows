@@ -16,8 +16,8 @@ on:
       ci_image:
         type: string
         required: false
-        default: ubuntu-22.04
-        description: Github type of machine to run the workflow on
+        default: ubuntu-24.04
+        description: Github type of machine to run the workflow
       python_versions:
         type: string
         required: false
@@ -54,14 +54,14 @@ jobs:
         python-version: ${{ fromJSON(inputs.python_versions) }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
-        ref: ${{ github.head_ref }}   # checkout the correct branch name
-        fetch-depth: 0                # fetch the whole repo history
+        ref: ${{ github.head_ref }}
+        fetch-depth: 0
 
     - name: Extract Application Version
       id: version
-      uses: codacy/git-version@2.8.0
+      uses: codacy/git-version@2.8.6
       with:
         release-branch: ${{ github.event.repository.default_branch }}
 
@@ -74,18 +74,15 @@ jobs:
       env:
         TAG: ${{ steps.version.outputs.version }}
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+    - name: Install uv and set up Python ${{ matrix.python-version }}
+      uses: astral-sh/setup-uv@v7
       with:
+        enable-cache: true
         python-version: ${{ matrix.python-version }}
-
-    - name: Install Poetry
-      run: |
-        make poetry_setup
 
     - name: Load cached venv
       id: cached-dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ${{ inputs.working_dir }}/.venv
         key: ${{ runner.os }}-venv-python${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml') }}
@@ -97,7 +94,7 @@ jobs:
 
     - name: Set project version
       run: |
-        make set_version VERSION=${{ steps.prepare.outputs.version }}
+        uv version ${{ steps.prepare.outputs.version }}
 
     - name: Lint
       if: ${{ inputs.lint == 'true' }}
@@ -112,7 +109,7 @@ jobs:
     - name: Test
       if: ${{ inputs.test == 'true' }}
       run: |
-        python3 -c "import os, json; secrets_dict = json.loads(os.getenv('SECRETS_JSON')); open('.env', 'a').writelines([f'{key}={value}\n' for key, value in secrets_dict.items()])"
+        python -c "import os, json; secrets_dict = json.loads(os.getenv('SECRETS_JSON')); open('.env', 'a').writelines([f'{key}={value}\n' for key, value in secrets_dict.items()])"
         make test_secrets_file
         make test
         rm -f .env

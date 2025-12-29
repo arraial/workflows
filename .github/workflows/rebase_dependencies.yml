@@ -22,7 +22,7 @@ jobs:
     name: Rebase current branch with '${{ inputs.branch }}'
     runs-on: ${{ inputs.ci_image }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0 # otherwise, one would need to push refs to dest repo
           ref: ${{ inputs.branch }}

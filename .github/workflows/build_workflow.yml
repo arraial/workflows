@@ -16,14 +16,14 @@ jobs:
       PUBLISH: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         ref: ${{ github.head_ref }}   # checkout the correct branch name
         fetch-depth: 0                # fetch the whole repo history
 
     - name: Git Version
       id: version
-      uses: codacy/git-version@2.8.0
+      uses: codacy/git-version@2.8.6
       with:
         release-branch: ${{ github.event.repository.default_branch }}
 

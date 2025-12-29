@@ -28,7 +28,7 @@ on:
       ci_image:
         type: string
         required: false
-        default: ubuntu-22.04
+        default: ubuntu-24.04
         description: Github type of machine to run the workflow on
       publish:
         type: boolean
@@ -54,14 +54,14 @@ jobs:
       contents: write
       packages: write
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         ref: ${{ github.head_ref }}   # checkout correct branch name
         fetch-depth: 0                # fetch whole repo history
 
     - name: Extract Application Version
       id: version
-      uses: codacy/git-version@2.8.0
+      uses: codacy/git-version@2.8.6
       with:
         release-branch: ${{ github.event.repository.default_branch }}
 
@@ -97,7 +97,7 @@ jobs:
 
     - name: Test
       if: ${{ inputs.test_image == 'true' }}
-      uses: docker/bake-action@v5
+      uses: docker/bake-action@v6
       with:
         workdir: ${{ inputs.working_dir }}
         push: false
@@ -124,7 +124,7 @@ jobs:
         password: ${{ secrets.github_token }}
 
     - name: Build and Push
-      uses: docker/bake-action@v5
+      uses: docker/bake-action@v6
       with:
         workdir: ${{ inputs.working_dir }}
         targets: image-all
@@ -137,7 +137,7 @@ jobs:
 
     - name: Update Docker Hub description
       if: ${{ env.PUBLISH == 'true' }}
-      uses: peter-evans/dockerhub-description@v4
+      uses: peter-evans/dockerhub-description@v5
       with:
         username: ${{ secrets.docker_username }}
         password: ${{ secrets.docker_token }}

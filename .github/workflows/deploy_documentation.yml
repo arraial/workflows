@@ -10,7 +10,7 @@ on:
       ci_image:
         type: string
         required: false
-        default: ubuntu-22.04
+        default: ubuntu-24.04
         description: Github type of machine to run the workflow on
 
 jobs:
