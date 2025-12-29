@@ -83,16 +83,16 @@ jobs:
         make test_setup
 
     - name: Lint
-      if: ${{ inputs.lint == 'true' }}
+      if: ${{ inputs.lint }}
       run: |
         make lint
 
     - name: Format
-      if: ${{ inputs.lint == 'true' }}
+      if: ${{ inputs.lint }}
       run: |
         make format
 
     - name: Test
-      if: ${{ inputs.test == 'true' }}
+      if: ${{ inputs.test }}
       run: |
         make test

@@ -97,17 +97,17 @@ jobs:
         uv version ${{ steps.prepare.outputs.version }}
 
     - name: Lint
-      if: ${{ inputs.lint == 'true' }}
+      if: ${{ inputs.lint }}
       run: |
         make lint
 
     - name: Format
-      if: ${{ inputs.lint == 'true' }}
+      if: ${{ inputs.lint }}
       run: |
         make format
 
     - name: Test
-      if: ${{ inputs.test == 'true' }}
+      if: ${{ inputs.test }}
       run: |
         python -c "import os, json; secrets_dict = json.loads(os.getenv('SECRETS_JSON')); open('.env', 'a').writelines([f'{key}={value}\n' for key, value in secrets_dict.items()])"
         make test_secrets_file

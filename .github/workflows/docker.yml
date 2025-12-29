@@ -96,7 +96,7 @@ jobs:
           type=raw,value=${{ steps.prepare.outputs.version }}
 
     - name: Test
-      if: ${{ inputs.test_image == 'true' }}
+      if: ${{ inputs.test_image }}
       uses: docker/bake-action@v6
       with:
         workdir: ${{ inputs.working_dir }}
