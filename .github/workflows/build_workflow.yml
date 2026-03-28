@@ -23,7 +23,7 @@ jobs:
 
     - name: Git Version
       id: version
-      uses: codacy/git-version@2.8.6
+      uses: codacy/git-version@2.8.7
       with:
         release-branch: ${{ github.event.repository.default_branch }}
 
